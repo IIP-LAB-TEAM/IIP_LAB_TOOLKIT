@@ -1,50 +1,8 @@
 from torcheval.metrics import MultilabelAccuracy
 from torcheval.metrics import MultilabelAUPRC
-import torch
+from toolkit.calculate.AUROC import AUROC
+from toolkit.calculate.Loss import Loss
 import numpy as np
-from sklearn.metrics import roc_auc_score
-
-class Loss():
-    def __init__(self):
-        self.loss_fun = torch.nn.BCELoss()
-        self.pred = None
-        self.label = None
-        self.device = "cpu"
-
-    def to(self, device):
-        self.device = device
-
-    def update(self, pred, label):
-        self.pred = pred if self.pred is None else torch.cat([self.pred, pred])
-        self.label = label if self.label is None else torch.cat([self.label, label])
-
-    def compute(self):
-        return self.loss_fun(self.pred.to(self.device), self.label.to(self.device))
-    
-    def reset(self):
-        self.pred = None
-        self.label = None
-
-class AUROC():
-    def __init__(self):
-        self.auroc_fun = roc_auc_score()
-        self.pred = None
-        self.label = None
-        self.device = "cpu"
-        
-    def to(self, device):
-        self.device = device
-
-    def update(self, pred, label):
-        self.pred = pred if self.pred is None else torch.cat([self.pred, pred])
-        self.label = label if self.label is None else torch.cat([self.label, label])
-
-    def compute(self):
-        return self.auroc_fun(self.pred.to(self.device), self.label.to(self.device))
-    
-    def reset(self):
-        self.pred = None
-        self.label = None
 
 class Result_metrics():
     def __init__(self, mode, loader_length, label_count, device):
@@ -116,43 +74,3 @@ class Result_metrics():
     def getBestResult(self, criteria="accuracy"):
         return {"accuracy": np.max(self.acc_epoch), "auprc": np.max(self.auprc_epoch),
                 "loss": np.min(self.loss_epoch), "auroc": np.max(self.auroc_epoch)}
-    
-
-# import torch
-# import torch.nn as nn
-
-# m = nn.Sigmoid()
-# loss = nn.BCELoss()
-
-# input_1 = torch.randn(3, requires_grad=True)
-# target_1 = torch.empty(3).random_(2)
-
-# input_2 = torch.randn(3, requires_grad=True)
-# target_2 = torch.empty(3).random_(2)
-
-# output_1 = loss(m(input_1), target_1)
-# print(output_1)
-
-# output_2 = loss(m(input_2), target_2)
-# print(output_2)
-
-# stacked_target = torch.cat([m(input_1), m(input_2)])
-# stacked_label = torch.cat([target_1, target_2])
-
-# print( loss(stacked_target, stacked_label) )
-
-# loss = Loss()
-
-# loss.update(m(input_1),target_1 )
-# print(loss.compute())
-
-# loss.update(m(input_2), target_2)
-# print(loss.compute())
-
-# loss.reset()
-
-# loss.update(m(input_1),target_1 )
-# print(loss.compute())
-
-# loss.update(m(input_2), target_2)
-# print(loss.compute())
