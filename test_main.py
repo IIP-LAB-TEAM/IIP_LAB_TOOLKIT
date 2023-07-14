@@ -1,6 +1,9 @@
 import time
 import unittest 
 from toolkit import multiprocessor, saveToFile
+from toolkit import Result_metrics, Loss
+import torch
+import torch.nn as nn
 
 def check(num):
     time.sleep(0.3)
@@ -20,5 +23,6 @@ class TestStringMethods(unittest.TestCase):
         result = saveToFile(num_list, "test.csv", prefix="./", time_stamp=True)
         self.assertEqual(result, True)
 
+    
 if __name__ == '__main__':
     unittest.main()
