@@ -1,0 +1,1 @@
+This directory is for generated file while test

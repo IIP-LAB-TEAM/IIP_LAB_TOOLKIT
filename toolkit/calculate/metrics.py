@@ -1,7 +1,7 @@
 from torcheval.metrics import MultilabelAccuracy
 from torcheval.metrics import MultilabelAUPRC
-from toolkit.calculate.AUROC import AUROC
-from toolkit.calculate.Loss import Loss
+from toolkit_package.toolkit.calculate.AUROC import AUROC
+from toolkit_package.toolkit.calculate.Loss import Loss
 import numpy as np
 
 class Result_metrics():

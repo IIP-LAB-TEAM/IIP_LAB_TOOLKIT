@@ -6,9 +6,12 @@ from collections.abc import Iterable
 
 def saveAsCSV(content, file_path="./auto_generated.csv"):
     with open(file_path, 'w', newline='') as f:
-        write = csv.writer(f) 
-        writer = write.writerows if is_NestedIterable(content) is True else write.writerow
-        writer(content)
+        write = csv.writer(f)
+        for row in content:
+            if is_NestedIterable(row):
+                write.writerow(row)
+            else:
+                write.writerow([row])
 
 def is_NestedIterable(target):
     if isIterable(target) and all(isIterable(target) for sublist in target):
