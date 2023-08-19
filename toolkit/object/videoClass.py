@@ -9,7 +9,7 @@ class VideoManager():
 
     def reshape(self, content, size):
         content = np.reshape(content, size)
-        content = content.astype(np.uint8)
+        content = cv2.normalize(content, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
         self.data = content
         self.step = "reshape"
         return self
@@ -25,14 +25,18 @@ class VideoManager():
         self.data = frame_list
         self.step = "makeVideoData"
         return self
+    
+    def saveVideo(self, filename="test.avi", frames=10, size=(40, 30)):
 
-    def saveVideo(self, filename="test.avi", size=(40, 30)):
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        videoobject = cv2.VideoWriter(filename, fourcc, 10, self.size)
-        # try:
-        if self.step == "makeVideoData":
+        if (self.step == "makeVideoData") | (self.step == "reshape"):
+            fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+            videoobject = cv2.VideoWriter(filename, fourcc, frames, (self.size[0], self.size[1]), False)
+            
+            
             for frame in self.data:
-                videoobject.write(frame)
-        # except Exception as e:
-        #     print(e)
-        videoobject.release()
+                image = cv2.GaussianBlur(frame, (10, 10), 0)
+                _, thresholded_image = cv2.threshold(image, 40, 255, cv2.THRESH_BINARY_INV)
+                image_no_background = cv2.bitwise_and(frame, frame, mask=thresholded_image)
+                videoobject.write(image_no_background)
+
+            videoobject.release()
